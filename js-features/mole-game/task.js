@@ -24,6 +24,7 @@ for (indexHole = 1; indexHole <= 9; indexHole++)  { //проверяем все 
 
             if (showCountLost == 5) {
                 alert("Проигрыш");
+                
             } 
     }
     } 
