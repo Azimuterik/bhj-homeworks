@@ -1,37 +1,36 @@
-let allSliders = document.getElementsByClassName("slider__item"); //массив классов картинок
-let allSlidersArrNext = [...allSliders];
+let allSliders = document.getElementsByClassName("slider__item"); 
+let allSlidersArr = [...allSliders];
+console.log(allSlidersArr);
 
-let i = 0; //переменная для переключения слйдов в массиве
-
+let slide = 0; 
 
 
 let BtnNext = document.querySelector("div.slider__arrow_next");
+
 let BtnPrev = document.querySelector("div.slider__arrow_prev");
 
 BtnNext.onclick = function() {
-        i += 1
-        if (i >= allSlidersArrNext.length) {
-            allSlidersArrNext[i - 1].classList.remove("slider__item_active");
-            i = 0;
-            allSlidersArrNext[i].classList.add("slider__item_active");
-        } else {
-            allSlidersArrNext[i - 1].classList.remove("slider__item_active");
-            allSlidersArrNext[i].classList.add("slider__item_active");
-
-        }
+        slide += 1;
+        changeSlide(slide);
 
 }
 
 BtnPrev.onclick = function() {
-    i -= 1
-    if (i < 0 ) {
-        allSlidersArrNext[i + 1].classList.remove("slider__item_active");
-        i = allSlidersArrNext.length - 1;
-        allSlidersArrNext[i].classList.add("slider__item_active");
-    } else {
-        allSlidersArrNext[i + 1].classList.remove("slider__item_active");
-        allSlidersArrNext[i].classList.add("slider__item_active");
+    slide -= 1
+    changeSlide(slide);
 
-    }
+}
 
+function changeSlide(s) {
+    let activeIndex = allSlidersArr.findIndex(item => item.className === "slider__item slider__item_active");
+    allSlidersArr[activeIndex].classList.remove('slider__item_active');
+
+s > allSlidersArr.length - 1 ? (
+        slide = 0 
+    ) : s < 0 ? (
+        slide = allSlidersArr.length - 1
+    )  : slide = s
+  
+allSlidersArr[slide].classList.add('slider__item_active');
+  
 }
