@@ -1,61 +1,51 @@
-const chatWidget = document.querySelector(".chat-widget__side");
-const widget = document.querySelector(".chat-widget");
 
-let input = document.querySelector("input");
-let messages = document.getElementById("chat-widget__messages");
+const productsListArr = [...document.querySelectorAll('.product')];
+const cartProducts = document.querySelector('.cart__products');
 
-const widgetArea = document.querySelector('.chat-widget__area')
+for (let i = 0; i < productsListArr.length; i++) {
+    productAdd(i);
+    productRemove(i);
+    addToCart(i);
+};
 
+function productAdd(i) {
+    productsListArr[i].querySelector('.product__quantity-control_inc').addEventListener('click', () => {
 
-const getAnswer = () => {
-    const robotAnswers = [
-        'Добрый день!',
-        'Напишите Ваш вопрос',
-        'Сейчас все операторы пьют чай',
-        'Не готов Вам помочь',
-        'Вы еще тут?',
-        'Обратитесь в службу поддержки',
-        'Покеда'
-    ];
+        (productsListArr[i].querySelector('.product__quantity-value').innerText) =
+        Number(productsListArr[i].querySelector('.product__quantity-value').innerText) + 1;
+    });
+};
 
-    let answer = Math.floor(Math.random() * robotAnswers.length);
+function productRemove(i) {
+    productsListArr[i].querySelector('.product__quantity-control_dec').addEventListener('click', () => {
+        let value = Number(productsListArr[i].querySelector('.product__quantity-value').innerText);
+        
+        if (value > 1) {
+            productsListArr[i].querySelector('.product__quantity-value').innerText =
+                Number(productsListArr[i].querySelector('.product__quantity-value').innerText) - 1;
+        };
+    });
+};
 
-    input.value = ''
+function addToCart(i) {
+    productsListArr[i].querySelector('.product__add').addEventListener('click', () => {
+        let cartProduct = [...document.querySelectorAll('.cart__product')];
+        for (let j = 0; j < cartProduct.length; j++) {
 
-    return robotAnswers[answer];
+            if (cartProduct[j].dataset.id == productsListArr[i].dataset.id) {
+                cartProduct[j].querySelector('.cart__product-count').innerText =
+                    parseInt(cartProduct[j].querySelector('.cart__product-count').innerText) +
+                    parseInt(productsListArr[i].querySelector('.product__quantity-value').innerText);
+                return;
+            };
+        };
 
-}
-
-chatWidget.addEventListener("click", () => {
-    widget.classList.toggle("chat-widget_active");
-});
-
-widgetArea.addEventListener("keydown", (event) => {
-    let time = new Date();
-    if (event.key === "Enter" && input.value !== '') {
-        messages.innerHTML += `
-        <div class="message message_client">
-    <div class="message__time">${
-      time.getHours() + ":" + time.getMinutes()
-    }</div>
-    <div class="message__text">
-      ${input.value}
-    </div>
-  </div>`;
-        document.querySelector('.chat-widget__messages-container').scrollTop = 999;
-    }
-});
-
-widgetArea.onchange = () => {
-    let time = new Date();
-    messages.innerHTML += `
-        <div class="message">
-    <div class="message__time">${
-      time.getHours() + ":" + time.getMinutes()
-    }</div>
-    <div class="message__text">
-      ${getAnswer()}
-    </div>
-  </div>`;
-    document.querySelector('.chat-widget__messages-container').scrollTop = 999;
-}
+        let productImage = productsListArr[i].querySelector('.product__image');
+        let htmlContainer =
+            `<div class="cart__product" data-id="${productsListArr[i].dataset.id}">
+          <img class="cart__product-image" src="${productImage.src}">
+          <div class="cart__product-count">${parseInt(productsListArr[i].querySelector('.product__quantity-value').innerText)}</div>
+        </div>`;
+        cartProducts.insertAdjacentHTML('beforeEnd', htmlContainer);
+    });
+};
