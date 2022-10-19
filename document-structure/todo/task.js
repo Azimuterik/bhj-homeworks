@@ -1,22 +1,33 @@
-let newTask = document.querySelector('.tasks__input');
-let taskList = document.querySelector('.tasks__list');
-let form = document.getElementById('tasks__form');
-let tasks = document.querySelectorAll('.task');
+const input = document.getElementById('task__input');
+const button = document.getElementById('tasks__add');
+const tasksList = document.getElementById('tasks__list');
 
-form.onsubmit = function() {
-    let textText = newTask.value.trim();
-    if (textText) {
-        taskList.insertAdjacentHTML("beforeend", `<div class="task">
-        <div class="task__title">${textText}</div>
-        <a href="#" class="task__remove"> 
-        &times;
-        </a>
-        </div>`)
-        let remover = document.querySelectorAll('.task__remove');
-        remover[remover.length -1].addEventListener('click', function(){
-            this.parentElement.remove();
-        })
+button.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    if(input.value.trim().length > 0) {
+        const task = document.createElement('div');
+        task.classList.add('task');
+    
+        task.innerHTML = `
+        <div class="task__title">
+        ${input.value}
+        </div>
+        <a href="#" class="task__remove">&times;</a>
+        `;
+    
+        tasksList.appendChild(task);
+    
+        const removeBtn = task.querySelector('.task__remove');
+    
+        removeBtn.addEventListener('click', (e) => {
+            e.target.closest('.task'.remove())
+        });
+    
+        input.value = '';
+    } else {
+        console.log('поле должно быть заполнено')
     }
-    newTask.value = '';
-    return false;
-};
+
+}) 
+

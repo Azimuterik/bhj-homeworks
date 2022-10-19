@@ -1,51 +1,62 @@
+const productsList = document.querySelectorAll('.product');
+const cart = document.querySelector('.cart__products');
 
-const productsListArr = [...document.querySelectorAll('.product')];
-const cartProducts = document.querySelector('.cart__products');
+let arr = [...productsList].map((item) => item.getAttribute('data-id'));
 
-for (let i = 0; i < productsListArr.length; i++) {
-    productAdd(i);
-    productRemove(i);
-    addToCart(i);
-};
+getInfoProduct = (item) => {
+    const controlsItem = item.querySelector('.product__controls');
+    const countBlock = controlsItem.querySelector('.product__quantity-value');
+    const imgItem = item.querySelector('.product__image').getAttribute('src');
+    const quantity = item.querySelectorAll('.product__quantity-control');
+    const dataId = item.getAttribute('data-id');
 
-function productAdd(i) {
-    productsListArr[i].querySelector('.product__quantity-control_inc').addEventListener('click', () => {
-
-        (productsListArr[i].querySelector('.product__quantity-value').innerText) =
-        Number(productsListArr[i].querySelector('.product__quantity-value').innerText) + 1;
+    quantity.forEach(item => {
+        item.addEventListener('click', e => {
+            // alert("клик")
+            if(e.target.classList.contains('product__quantity-control_dec')) {
+                if (countBlock.textContent > 1) {
+                    countBlock.innerHTML = countBlock.textContent - 1;
+                } 
+            } else {
+                countBlock.innerHTML = +countBlock.textContent + 1;
+            }
+        });
     });
-};
 
-function productRemove(i) {
-    productsListArr[i].querySelector('.product__quantity-control_dec').addEventListener('click', () => {
-        let value = Number(productsListArr[i].querySelector('.product__quantity-value').innerText);
+    const addBtn = controlsItem.querySelector('.product__add');
+
+
+    addBtn.addEventListener('click', () => {
+        const div = document.createElement('div');
+
+        div.setAttribute('id', dataId);
+        div.classList.add('cart__product');
+
+        div.innerHTML = `
+            <img class="cart__product-image" src=${imgItem}>
+            <div class="cart__product-count">${countBlock.textContent}</div>
+        `;
+
+        const idRenderElem = arr.find(item => item === dataId); //надо посмотреть id это или индекс массива
+        // alert(idRenderElem)
+
         
-        if (value > 1) {
-            productsListArr[i].querySelector('.product__quantity-value').innerText =
-                Number(productsListArr[i].querySelector('.product__quantity-value').innerText) - 1;
-        };
+
+
+
+        if(document.getElementById(idRenderElem)) {
+            const foundElement = document.getElementById(idRenderElem);
+            const prevCount = foundElement.querySelector('.cart__product-count').textContent;
+             
+            foundElement.querySelector('.cart__product-count').innerHTML = +countBlock.textContent + +prevCount;
+           
+        } else {
+            cart.appendChild(div);
+        }
     });
 };
 
-function addToCart(i) {
-    productsListArr[i].querySelector('.product__add').addEventListener('click', () => {
-        let cartProduct = [...document.querySelectorAll('.cart__product')];
-        for (let j = 0; j < cartProduct.length; j++) {
 
-            if (cartProduct[j].dataset.id == productsListArr[i].dataset.id) {
-                cartProduct[j].querySelector('.cart__product-count').innerText =
-                    parseInt(cartProduct[j].querySelector('.cart__product-count').innerText) +
-                    parseInt(productsListArr[i].querySelector('.product__quantity-value').innerText);
-                return;
-            };
-        };
-
-        let productImage = productsListArr[i].querySelector('.product__image');
-        let htmlContainer =
-            `<div class="cart__product" data-id="${productsListArr[i].dataset.id}">
-          <img class="cart__product-image" src="${productImage.src}">
-          <div class="cart__product-count">${parseInt(productsListArr[i].querySelector('.product__quantity-value').innerText)}</div>
-        </div>`;
-        cartProducts.insertAdjacentHTML('beforeEnd', htmlContainer);
-    });
-};
+ productsList.forEach((el) => {
+    getInfoProduct(el);
+ })
